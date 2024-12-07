@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import callGeminiApi from './GeminiApi';
 import './QuestionForm.css';
-import Markdown from 'react-markdown';
 import { MarkdownText } from './MarkDown';
 
 
