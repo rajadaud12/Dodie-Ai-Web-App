@@ -40,7 +40,7 @@ const callGeminiApi = async (prompt) => {
 
   } catch (error) {
     console.error('Error calling Gemini API:', error);
-    return 'An error occurred while fetching the response. Please try again.';
+    return 'Api key is expired or limit is reached';
   }
 };
 
