@@ -1,22 +1,20 @@
 import axios from 'axios';
 
-const apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=API_KEY_HERE';
-
-const predefinedResponses = [
-  { keyword: 'who are you', response: 'I am dodie Ai , powered by google gemini' },
-
-
-
-];
 
 const callGeminiApi = async (prompt) => {
-  const normalizedPrompt = prompt.trim().toLowerCase();
+  // Extract the latest message (last message in the chain)
+  const latestMessage = prompt.split(' ').slice(-50).join(' ').toLowerCase();
 
-  for (const { keyword, response } of predefinedResponses) {
-    if (normalizedPrompt.includes(keyword)) {
-      return response;
-    }
+ 
+
+  const apiKey = process.env.REACT_APP_GEMINI_API_KEY;
+
+  if (!apiKey) {
+    console.error('Gemini API key is not set');
+    return 'API key is missing. Please set REACT_APP_GEMINI_API_KEY in your .env file.';
   }
+
+  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
 
   try {
     const requestBody = {
@@ -24,7 +22,7 @@ const callGeminiApi = async (prompt) => {
         {
           parts: [
             {
-              text: prompt // This is where the user's question goes
+              text: prompt, // The entire conversation context
             }
           ]
         }
@@ -42,7 +40,7 @@ const callGeminiApi = async (prompt) => {
 
   } catch (error) {
     console.error('Error calling Gemini API:', error);
-    return 'An error occurred while processing your request.';
+    return 'An error occurred while fetching the response. Please try again.';
   }
 };
 

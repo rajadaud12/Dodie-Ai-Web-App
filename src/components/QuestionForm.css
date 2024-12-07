@@ -1,6 +1,5 @@
 /* General body styling */
 body {
-    
     margin: 0;
     padding: 0;
     color: #e0e0e0;
@@ -81,11 +80,6 @@ body {
     outline: none;
 }
 
-.conversation-item:hover {
-    background-color: #6a6ff2;
-    transform: scale(1.02);
-}
-
 .conversation-item:focus,
 .conversation-item.active {
     outline: none;
@@ -116,10 +110,6 @@ body {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    padding: 20px;
-    background-color: #181818;
     position: relative;
     overflow: hidden;
     height: 100vh;
@@ -136,7 +126,9 @@ body {
     top: 0;
     left: 0;
     transition: opacity 0.5s ease, transform 0.5s ease;
-    height: calc(100% - 70px); /* Adjust based on your form height */
+    height: calc(100% - 70px);
+    z-index: 1;
+    background-color: #181818;
 }
 
 /* Header */
@@ -181,96 +173,56 @@ body {
     transform: scale(1.05);
 }
 
+/* Chat container */
 .chat-container {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    padding-left: 50px;
-    padding-top: 50px;
+    bottom: 70px; /* Space for input bar */
+    padding: 50px 50px 20px;
     background-color: #1e1e1e;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
     transition: all 0.5s ease;
     opacity: 0;
-    padding-bottom: 50px;
-    max-height: 100vh !important;
-    margin-bottom: 100px !important; 
+    z-index: 0;
+}
 
-  }
-  
-  
-  .chat-container.active {
+.chat-container.active {
     opacity: 1;
-  }
-  
-  .chat-messages {
+    z-index: 1;
+}
+
+.chat-messages {
     display: flex;
     flex-direction: column;
     max-height: 100%;
-    margin-bottom: 100px !important; 
-
-  }
-  
-  /* Adjust the question-form styles */
-  .question-form {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 10px;
-    z-index: 10;
-    display: flex;
-    justify-content: center;
-  }
-  
-  /* Remove the margin-bottom from the question-form */
-  .question-form {
-    margin-bottom: 0;
-  }
-  
-  /* Adjust the main-content to have a relative position */
-  .main-content {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    overflow: hidden;
-    height: 100vh;
-  }
-.chat-container.active {
-    opacity: 1;
-    height: calc(100% - 70px); /* Adjust based on your form height */
-    overflow-x: auto; /* Enable horizontal overflow when active */
-    margin-bottom: 1000px !important;
 }
 
-
-/* Custom scrollbars for both vertical and horizontal */
+/* Scrollbar styles */
 .chat-container::-webkit-scrollbar {
     width: 10px; 
-    height: 10px; /* Horizontal scrollbar height */
+    height: 10px;
 }
 
 .chat-container::-webkit-scrollbar-thumb {
     background-color: #6a6ff2;
     border-radius: 10px;
-    border: 2px solid #1e1e1e; /* Adds space and makes thumb look better */
+    border: 2px solid #1e1e1e;
 }
 
-/* Scrollbar track for better visibility */
 .chat-container::-webkit-scrollbar-track {
     background-color: #2a2a2a;
 }
 
-/* Horizontal scroll customization */
 .chat-container::-webkit-scrollbar-thumb:horizontal {
-    background: linear-gradient(90deg, #8a8ff5, #6a6ff2); /* Gradient for an attractive look */
+    background: linear-gradient(90deg, #8a8ff5, #6a6ff2);
 }
 
 .chat-container::-webkit-scrollbar-thumb:hover {
-    background-color: #5a5af2; /* Change color on hover */
+    background-color: #5a5af2;
 }
 
 /* Messages */
@@ -278,7 +230,6 @@ body {
     padding: 12px 18px;
     margin-bottom: 12px;
     border-radius: 10px;
-    margin-right: 80px;
     max-width: 60%;
     word-wrap: break-word;
     display: inline-block;
@@ -286,30 +237,20 @@ body {
     transition: all 0.2s ease;
 }
 
-/* User message styling */
 .user-message {
     background-color: #6a6ff2;
     color: #fff;
     align-self: flex-end;
     border-radius: 10px 0 10px 10px;
+    margin-left: auto;
 }
 
-.user-message:hover {
-    transform: scale(1.02);
-    background-color: #5a5af2;
-}
-
-/* AI message styling */
 .ai-message {
     background-color: #3a3a3a;
     color: #fff;
     align-self: flex-start;
     border-radius: 0 10px 10px 10px;
-}
-
-.ai-message:hover {
-    transform: scale(1.02);
-    background-color: #4a4a4a;
+    margin-right: auto;
 }
 
 /* Question form */
@@ -319,10 +260,12 @@ body {
     left: 0;
     right: 0;
     padding: 10px;
-    margin-bottom: 50px;
     z-index: 10;
     display: flex;
     justify-content: center;
+    background-color: #181818;
+    height: 70px;
+    align-items: center;
 }
 
 .question-input {

@@ -2,6 +2,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import callGeminiApi from './GeminiApi';
 import './QuestionForm.css';
+import Markdown from 'react-markdown';
+import { MarkdownText } from './MarkDown';
+
 
 const QuestionForm = () => {
   const [question, setQuestion] = useState('');
@@ -16,7 +19,13 @@ const QuestionForm = () => {
   const chatContainerRef = useRef(null);
   const inputRef = useRef(null);
 
-  useEffect(() => {
+  const predefinedResponses = [
+    { keyword: 'who are you', response: 'I am Dodie Ai, powered by Google Gemini' },
+    { keyword: 'services', response: 'I can help you with various tasks like explaining code, answering questions, and providing insights.' },
+    { keyword: 'engineer', response: 'As an AI, I can break down complex technical concepts step-by-step, analyze code, and provide detailed explanations.' }
+  ];
+  
+   useEffect(() => {
     const storedConversations = JSON.parse(localStorage.getItem('conversations'));
     if (storedConversations && storedConversations.length > 0) {
       setConversations(storedConversations);
@@ -32,21 +41,24 @@ const QuestionForm = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+  
     if (!question.trim()) return;
-
+  
+    // Show suggestions only when the current conversation is new
     setShowSuggestions(false);
-
+  
+    // Add the user message to the chats
     const newChats = [...chats, { sender: 'user', message: question }];
     setChats(newChats);
-    setQuestion('');
-    setTyping(true);
-    setStopped(false);
-
+    setQuestion(''); // Reset the input field
+    setTyping(true); // Start typing animation
+    setStopped(false); // Ensure typing animation continues
+  
+    // Combine previous messages into a string for API context
     const previousMessages = newChats.map(chat => chat.message).join(' ');
-
+  
     const response = await callGeminiApi(previousMessages);
-
+  
     let i = 0;
     typingInterval.current = setInterval(() => {
       if (i < response.length && !stopped) {
@@ -62,6 +74,7 @@ const QuestionForm = () => {
       }
     }, 10);
   };
+  
 
   const updateConversation = (updatedChats) => {
     const updatedConversations = [...conversations];
@@ -190,19 +203,20 @@ const QuestionForm = () => {
           </div>
         </div>
         <div className={`chat-container ${chats.length > 0 ? 'active' : ''}`} ref={chatContainerRef}>
-          {chats.map((chat, index) => (
-            <div
-              key={index}
-              className={`message ${chat.sender === 'user' ? 'user-message' : 'ai-message'}`}
-            >
-              {chat.message}
-            </div>
-          ))}
-          {typing && (
-            <div className="message ai-message">
-              {currentAnswer}
-            </div>
-          )}
+        {chats.map((chat, index) => (
+  <div
+    key={index}
+    className={`message ${chat.sender === 'user' ? 'user-message' : 'ai-message'}`}
+  >
+    <MarkdownText>{chat.message}</MarkdownText>
+  </div>
+))}
+
+{typing && (
+  <div className="message ai-message">
+    <MarkdownText>{currentAnswer}</MarkdownText>
+  </div>
+)}
         </div>
         <form onSubmit={handleSubmit} className="question-form">
           <input
