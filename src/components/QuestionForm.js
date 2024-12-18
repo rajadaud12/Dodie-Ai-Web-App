@@ -40,40 +40,38 @@ const QuestionForm = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     if (!question.trim()) return;
-  
-    // Show suggestions only when the current conversation is new
+
     setShowSuggestions(false);
-  
-    // Add the user message to the chats
+
     const newChats = [...chats, { sender: 'user', message: question }];
     setChats(newChats);
-    setQuestion(''); // Reset the input field
-    setTyping(true); // Start typing animation
-    setStopped(false); // Ensure typing animation continues
-  
-    // Combine previous messages into a string for API context
-    const previousMessages = newChats.map(chat => chat.message).join(' ');
-  
-    const response = await callGeminiApi(previousMessages);
-  
+    setQuestion('');
+    setTyping(true);
+    setStopped(false);
+
+    // Extract limited context (e.g., last 5 messages)
+    const context = newChats.slice(-5).map(chat => `${chat.sender}: ${chat.message}`).join('\n');
+
+    const response = await callGeminiApi(context);
+
     let i = 0;
     typingInterval.current = setInterval(() => {
-      if (i < response.length && !stopped) {
-        setCurrentAnswer((prev) => prev + response[i]);
-        i++;
-      } else {
-        clearInterval(typingInterval.current);
-        setTyping(false);
-        const updatedChats = [...newChats, { sender: 'ai', message: response }];
-        setChats(updatedChats);
-        setCurrentAnswer('');
-        updateConversation(updatedChats);
-      }
+        if (i < response.length && !stopped) {
+            setCurrentAnswer(prev => prev + response[i]);
+            i++;
+        } else {
+            clearInterval(typingInterval.current);
+            setTyping(false);
+            const updatedChats = [...newChats, { sender: 'ai', message: response }];
+            setChats(updatedChats);
+            setCurrentAnswer('');
+            updateConversation(updatedChats);
+        }
     }, 10);
-  };
-  
+};
+
 
   const updateConversation = (updatedChats) => {
     const updatedConversations = [...conversations];
